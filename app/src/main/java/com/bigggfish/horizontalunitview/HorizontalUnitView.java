@@ -486,7 +486,7 @@ public class HorizontalUnitView extends View {
      */
     public void setCheckedPos(int position) {
         if (position >= mVisibleNum2 || position < -1) {
-            throw new IllegalArgumentException("输入position不正确 position:" + position);
+            return;
         }
         mCheckedNum2 = position + 1;
         isInitDraw = false;
