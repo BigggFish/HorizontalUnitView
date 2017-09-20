@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,40 +23,40 @@ import java.util.List;
 public class HorizontalUnitView extends View {
 
     //默认值
-    private static final int DEFAULT_CHECKED_COLOR = 0xff2196F3;
-    private static final int DEFAULT_NORMAL_COLOR = Color.LTGRAY;
+    private static final int DEFAULT_CHECKED_COLOR = 0xff3773f5;
+    private static final int DEFAULT_NORMAL_COLOR = 0xffd2dffd;
     private static final int DEFAULT_BG_COLOR = 0xffffffff;
-    private static final int DEFAULT_INNER_RADIUS = 6;
-    private static final int DEFAULT_OUT_RADIUS = 12;
+    private static final int DEFAULT_INNER_RADIUS = 5;
+    private static final int DEFAULT_OUT_RADIUS = 10;
     private static final int DEFAULT_ITEM_COUNT = 4;
     private static final int DEFAULT_RING_STROKE_WIDTH = 1;
-    private static final int DEFAULT_LINE_STROKE_WIDTH = 3;
+    private static final int DEFAULT_LINE_STROKE_WIDTH = 2;
     private static final int DEFAULT_TEXT_PADDING = 8;
 
     private Context mContext;
 
     //绘制处理
-    private int mScreenWidth;//屏幕宽度
-    private int mLineLength;//连线长度
-    private int mPaddingLeft;//paddingleft
-    private int mPaddingRight;//paddingright
-    private int mPaddingTop;//paddingtop
-    private int mPaddingBottom;//paddingbottom
-    private int mTextPadding = DEFAULT_TEXT_PADDING;//text padding
-    private int mOutRadius = DEFAULT_OUT_RADIUS;//外圆半径
-    private int mInnerRadius = DEFAULT_INNER_RADIUS;//内圆半径
-    private int mDefInnerRadius = DEFAULT_INNER_RADIUS;
-    private int mOutDiam = DEFAULT_OUT_RADIUS * 2;//外圆直径
-    //private int mInnerDiam = DEFAULT_INNER_RADIUS * 2;//内圆直径
-    private int mWidth;//控件自己宽度
-    private int mHeight;//控件自己高度
-    private int mRingStrokeWidth = DEFAULT_RING_STROKE_WIDTH;//绘制圆环线宽度
-    private int mLineStrokeWidth = DEFAULT_LINE_STROKE_WIDTH;//绘制连线宽度
+    private int mScreenWidth2;//屏幕宽度
+    private int mLineLength2;//连线长度
+    private int mPaddingLeft2;//paddingleft
+    private int mPaddingRight2;//paddingright
+    private int mPaddingTop2;//paddingtop
+    private int mPaddingBottom2;//paddingbottom
+    private int mTextPadding2 = DEFAULT_TEXT_PADDING;//text padding
+    private int mOutRadius2 = DEFAULT_OUT_RADIUS;//外圆半径
+    private int mInnerRadius2 = DEFAULT_INNER_RADIUS;//内圆半径
+    private int mDefInnerRadius2 = DEFAULT_INNER_RADIUS;
+    private int mOutDiam2 = DEFAULT_OUT_RADIUS * 2;//外圆直径
+    //private int mInnerDiam2 = DEFAULT_INNER_RADIUS * 2;//内圆直径
+    private int mWidth2;//控件自己宽度
+    private int mHeight2;//控件自己高度
+    private int mRingStrokeWidth2 = DEFAULT_RING_STROKE_WIDTH;//绘制圆环线宽度
+    private int mLineStrokeWidth2 = DEFAULT_LINE_STROKE_WIDTH;//绘制连线宽度
 
-    private int mItemCount = DEFAULT_ITEM_COUNT;//总item个数
-    private int mCheckedNum;//选中item个数
-    private int mVisibleNum;
-    private float mTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+    private int mItemCount2 = DEFAULT_ITEM_COUNT;//总item个数
+    private int mCheckedNum2;//选中item个数
+    private int mVisibleNum2;
+    private float mTextSize2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
             14, getResources().getDisplayMetrics());//默认字体大小
     private int mCheckedColor = DEFAULT_CHECKED_COLOR;//选中item颜色
     private int mNormalColor = DEFAULT_NORMAL_COLOR;//默认item颜色
@@ -65,15 +66,15 @@ public class HorizontalUnitView extends View {
     private ValueAnimator pointAnim;//绘制线动画
     private float mRate = 0f;//绘制多少比率 0~1
     private int mCurrentDrawPosition = 0;//当前绘制第几个item
-    private boolean isInitDraw = true;//是否是初始化动画绘制还是点击动画绘制
+    private boolean isInitDraw = true;//是否是初始化绘制
 
     //点击处理
-    private int mTouchSlop;//最小点击距离
+    private int mTouchSlop2;//最小点击距离
     private float downOldX;//点击位置X坐标
     private float downOldY;//点击位置Y坐标
     private OnItemClickListener mListener;
     //数据处理
-    private Adapter mAdapter;
+    private Adapter mAdapter2;
     private List<String> mTextList2 = new ArrayList<>();
 
     ///////////////////////OLD///////////////////////////
@@ -101,23 +102,25 @@ public class HorizontalUnitView extends View {
     private void init() {
         //初始化屏幕宽度
         DisplayMetrics dm = getResources().getDisplayMetrics();
-        mScreenWidth = dm.widthPixels;
+        mScreenWidth2 = dm.widthPixels;
         //点击最小距离
-        mTouchSlop = ViewConfiguration.get(mContext).getScaledTouchSlop();
+        mTouchSlop2 = ViewConfiguration.get(mContext).getScaledTouchSlop();
         setFocusable(true);
         setFocusableInTouchMode(true);
         //measureParams();
         initAnimator();
-        mDefInnerRadius = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        mDefInnerRadius2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 DEFAULT_INNER_RADIUS, getResources().getDisplayMetrics());
-        mOutRadius = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        mOutRadius2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 DEFAULT_OUT_RADIUS, getResources().getDisplayMetrics());
-        mInnerRadius = mDefInnerRadius;
-        mOutDiam = mOutRadius * 2;
-        mRingStrokeWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        mInnerRadius2 = mDefInnerRadius2;
+        mOutDiam2 = mOutRadius2 * 2;
+        mRingStrokeWidth2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 DEFAULT_RING_STROKE_WIDTH, getResources().getDisplayMetrics());
-        mLineStrokeWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        mLineStrokeWidth2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 DEFAULT_LINE_STROKE_WIDTH, getResources().getDisplayMetrics());
+        mTextPadding2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                DEFAULT_TEXT_PADDING, getResources().getDisplayMetrics());
     }
 
     /**
@@ -125,13 +128,13 @@ public class HorizontalUnitView extends View {
      */
     private void initPaint() {
         mPaintLine = new Paint();
-        mPaintLine.setStrokeWidth(mLineStrokeWidth);
+        mPaintLine.setStrokeWidth(mLineStrokeWidth2);
 
         mPaintBlueRing = new Paint();
         mPaintBlueRing.setStyle(Paint.Style.STROKE);
         mPaintBlueRing.setAntiAlias(true);
         mPaintBlueRing.setColor(mCheckedColor);
-        mPaintBlueRing.setStrokeWidth(mRingStrokeWidth);
+        mPaintBlueRing.setStrokeWidth(mRingStrokeWidth2);
 
         mPaintBlueCircle = new Paint();
         mPaintBlueCircle.setStyle(Paint.Style.FILL);
@@ -140,10 +143,10 @@ public class HorizontalUnitView extends View {
 
         mPaintGreyCircle = new Paint();
         mPaintGreyCircle.setAntiAlias(true);
-        mPaintGreyCircle.setColor(Color.GRAY);
+        mPaintGreyCircle.setColor(mNormalColor);
 
         mTextPaint = new Paint();
-        mTextPaint.setTextSize(mTextSize);
+        mTextPaint.setTextSize(mTextSize2);
     }
 
     /**
@@ -151,8 +154,8 @@ public class HorizontalUnitView extends View {
      */
     private void measureParams() {
         //计算连线长度
-        if (mItemCount != 0) {
-            mLineLength = (mScreenWidth - mPaddingLeft - mPaddingRight - mOutDiam * mItemCount) / (mItemCount - 1);
+        if (mItemCount2 != 0) {
+            mLineLength2 = (mScreenWidth2 - mPaddingLeft2 - mPaddingRight2 - mOutDiam2 * mItemCount2) / (mItemCount2 - 1);
         }
 
     }
@@ -176,16 +179,16 @@ public class HorizontalUnitView extends View {
         int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
-        mPaddingLeft = getPaddingLeft();
-        mPaddingRight = getPaddingRight();
-        mPaddingTop = getPaddingTop();
-        mPaddingBottom = getPaddingBottom();
+        mPaddingLeft2 = getPaddingLeft();
+        mPaddingRight2 = getPaddingRight();
+        mPaddingTop2 = getPaddingTop();
+        mPaddingBottom2 = getPaddingBottom();
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) getLayoutParams();
         if (widthSpecMode == MeasureSpec.AT_MOST) {
-            widthSpecSize = mScreenWidth - lp.leftMargin - lp.rightMargin;
+            widthSpecSize = mScreenWidth2 - lp.leftMargin - lp.rightMargin;
         }
         if (heightSpecMode == MeasureSpec.AT_MOST) {
-            heightSpecSize = mPaddingTop + mPaddingBottom + mOutDiam + mTextPadding + (int) mTextSize + 1;
+            heightSpecSize = mPaddingTop2 + mPaddingBottom2 + mOutDiam2 + mTextPadding2 + (int) mTextSize2 + 1;
             //heightSpecSize = DisplayUtils.dp2px(getContext(), mHeight);
         }
         setMeasuredDimension(widthSpecSize, heightSpecSize);
@@ -202,112 +205,104 @@ public class HorizontalUnitView extends View {
         }
     }
 
-    /**
-     * 初始化绘制item
-     * @param canvas
-     */
     private void initVisibleNum(Canvas canvas) {
-        for (int i = 0; i < mItemCount; i++) {
-            if (i < mVisibleNum) {//需要动画绘制个数
-                if (i == mCheckedNum - 1) {//初始化绘制当前选择的点。
+        for (int i = 0; i < mItemCount2; i++) {
+            if (i < mVisibleNum2) {
+                if (i == mCheckedNum2 - 1) {
                     if (i < mCurrentDrawPosition) {
-                        mInnerRadius = mDefInnerRadius;
-                        drawInnerBlueCircle(canvas, mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam), mPaddingTop + mOutRadius);
+                        mInnerRadius2 = mDefInnerRadius2;
+                        drawInnerBlueCircle(canvas, mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2), mPaddingTop2 + mOutRadius2);
                     } else if (i == mCurrentDrawPosition) {
-                        mInnerRadius = (int) (mDefInnerRadius * mRate);
-                        drawInnerBlueCircle(canvas, mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam), mPaddingTop + mOutRadius);
+                        mInnerRadius2 = (int) (mDefInnerRadius2 * mRate);
+                        drawInnerBlueCircle(canvas, mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2), mPaddingTop2 + mOutRadius2);
                     } else {
-                        mInnerRadius = mDefInnerRadius;
-                        drawInnerBlueCircle(canvas, mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam), mPaddingTop + mOutRadius);
+                        mInnerRadius2 = mDefInnerRadius2;
+                        drawInnerBlueCircle(canvas, mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2), mPaddingTop2 + mOutRadius2);
                     }
                 }
 
-                if (i < mCurrentDrawPosition) {//动画完成item
-                    drawBlueCircle(canvas, mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam), mPaddingTop + mOutRadius);
+                if (i < mCurrentDrawPosition) {
+                    drawBlueCircle(canvas, mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2), mPaddingTop2 + mOutRadius2);
                     if (mTextList2 != null && mTextList2.size() > i) {
-                        drawBlueText(canvas, mTextList2.get(i), mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam)
-                                , mPaddingTop + mOutDiam + mTextPadding + (int) mTextSize);
+                        drawBlueText(canvas, mTextList2.get(i), mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2)
+                                , mPaddingTop2 + mOutDiam2 + mTextPadding2 + (int) mTextSize2);
                     }
-                    if (i < mItemCount - 1) {
-                        int startX = mPaddingLeft + mOutDiam + i * (mLineLength + mOutDiam);
-                        int endXBlue = startX + mLineLength;
-                        drawBlueLine(canvas, startX, mPaddingTop + mOutRadius, endXBlue, mPaddingTop + mOutRadius);
+                    if (i < mItemCount2 - 1) {
+                        int startX = mPaddingLeft2 + mOutDiam2 + i * (mLineLength2 + mOutDiam2);
+                        int endXBlue = startX + mLineLength2;
+                        drawBlueLine(canvas, startX, mPaddingTop2 + mOutRadius2, endXBlue, mPaddingTop2 + mOutRadius2);
                     }
-                } else if (i == mCurrentDrawPosition) {//绘制选中item，动画进行中
-                    drawBlueCircle(canvas, mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam), mPaddingTop + mOutRadius);
+                } else if (i == mCurrentDrawPosition) {
+                    drawBlueCircle(canvas, mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2), mPaddingTop2 + mOutRadius2);
                     if (mTextList2 != null && mTextList2.size() > i) {
-                        drawBlueText(canvas, mTextList2.get(i), mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam)
-                                , mPaddingTop + mOutDiam + mTextPadding + (int) mTextSize);
+                        drawBlueText(canvas, mTextList2.get(i), mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2)
+                                , mPaddingTop2 + mOutDiam2 + mTextPadding2 + (int) mTextSize2);
                     }
-                    if (i < mItemCount - 1) {
-                        int startX = mPaddingLeft + mOutDiam + i * (mLineLength + mOutDiam);
-                        int endXBlue = startX + (int) (mLineLength * mRate);
-                        int endXGrey = endXBlue + (int) (mLineLength * (1 - mRate));
-                        drawBlueLine(canvas, startX, mPaddingTop + mOutRadius, endXBlue, mPaddingTop + mOutRadius);
-                        drawGreyLine(canvas, endXBlue, mPaddingTop + mOutRadius, endXGrey, mPaddingTop + mOutRadius);
+                    if (i < mItemCount2 - 1) {
+                        int startX = mPaddingLeft2 + mOutDiam2 + i * (mLineLength2 + mOutDiam2);
+                        int endXBlue = startX + (int) (mLineLength2 * mRate);
+                        int endXGrey = endXBlue + (int) (mLineLength2 * (1 - mRate));
+                        drawBlueLine(canvas, startX, mPaddingTop2 + mOutRadius2, endXBlue, mPaddingTop2 + mOutRadius2);
+                        drawGreyLine(canvas, endXBlue, mPaddingTop2 + mOutRadius2, endXGrey, mPaddingTop2 + mOutRadius2);
                     }
-                } else {//动画未开始item
-                    drawGreyCircle(canvas, mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam), mPaddingTop + mOutRadius);
+                } else {
+                    drawGreyCircle(canvas, mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2), mPaddingTop2 + mOutRadius2);
                     if (mTextList2 != null && mTextList2.size() > i) {
-                        drawGreyText(canvas, mTextList2.get(i), mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam)
-                                , mPaddingTop + mOutDiam + mTextPadding + (int) mTextSize);
+                        drawGreyText(canvas, mTextList2.get(i), mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2)
+                                , mPaddingTop2 + mOutDiam2 + mTextPadding2 + (int) mTextSize2);
                     }
-                    if (i < mItemCount - 1) {
-                        int startX = mPaddingLeft + mOutDiam + i * (mLineLength + mOutDiam);
-                        int endX = startX + mLineLength;
-                        drawGreyLine(canvas, startX, mPaddingTop + mOutRadius, endX, mPaddingTop + mOutRadius);
+                    if (i < mItemCount2 - 1) {
+                        int startX = mPaddingLeft2 + mOutDiam2 + i * (mLineLength2 + mOutDiam2);
+                        int endX = startX + mLineLength2;
+                        drawGreyLine(canvas, startX, mPaddingTop2 + mOutRadius2, endX, mPaddingTop2 + mOutRadius2);
                     }
                 }
 
-            } else {//灰色item
-                drawGreyCircle(canvas, mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam), mPaddingTop + mOutRadius);
+            } else {
+                drawGreyCircle(canvas, mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2), mPaddingTop2 + mOutRadius2);
                 if (mTextList2 != null && mTextList2.size() > i) {
-                    drawGreyText(canvas, mTextList2.get(i), mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam)
-                            , mPaddingTop + mOutDiam + mTextPadding + (int) mTextSize);
+                    drawGreyText(canvas, mTextList2.get(i), mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2)
+                            , mPaddingTop2 + mOutDiam2 + mTextPadding2 + (int) mTextSize2);
                 }
-                if (i < mItemCount - 1) {
-                    int startX = mPaddingLeft + mOutDiam + i * (mLineLength + mOutDiam);
-                    int endX = startX + mLineLength;
-                    drawGreyLine(canvas, startX, mPaddingTop + mOutRadius, endX, mPaddingTop + mOutRadius);
+                if (i < mItemCount2 - 1) {
+                    int startX = mPaddingLeft2 + mOutDiam2 + i * (mLineLength2 + mOutDiam2);
+                    int endX = startX + mLineLength2;
+                    drawGreyLine(canvas, startX, mPaddingTop2 + mOutRadius2, endX, mPaddingTop2 + mOutRadius2);
                 }
             }
         }
     }
 
-    /**
-     * 点击事件绘制item
-     * @param canvas
-     */
     private void drawCheckPos(Canvas canvas) {
 
-        for (int i = 0; i < mItemCount; i++) {
-            if (i < mVisibleNum) {
-                if(i == mCheckedNum - 1){
-                    mInnerRadius = (int) (mDefInnerRadius * mRate);
-                    drawInnerBlueCircle(canvas, mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam), mPaddingTop + mOutRadius);
+        for (int i = 0; i < mItemCount2; i++) {
+            if (i < mVisibleNum2) {
+                if(i == mCheckedNum2 - 1){
+                    mInnerRadius2 = (int) (mDefInnerRadius2 * mRate);
+                    drawInnerBlueCircle(canvas, mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2), mPaddingTop2 + mOutRadius2);
                 }
 
-                drawBlueCircle(canvas, mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam), mPaddingTop + mOutRadius);
+                drawBlueCircle(canvas, mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2), mPaddingTop2 + mOutRadius2);
                 if (mTextList2 != null && mTextList2.size() > i) {
-                    drawBlueText(canvas, mTextList2.get(i), mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam)
-                            , mPaddingTop + mOutDiam + mTextPadding + (int) mTextSize);
+                    drawBlueText(canvas, mTextList2.get(i), mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2)
+                            , mPaddingTop2 + mOutDiam2 + mTextPadding2 + (int) mTextSize2);
                 }
-                if (i < mItemCount - 1) {
-                    int startX = mPaddingLeft + mOutDiam + i * (mLineLength + mOutDiam);
-                    int endXBlue = startX + mLineLength;
-                    drawBlueLine(canvas, startX, mPaddingTop + mOutRadius, endXBlue, mPaddingTop + mOutRadius);
+                if (i < mItemCount2 - 1) {
+                    int startX = mPaddingLeft2 + mOutDiam2 + i * (mLineLength2 + mOutDiam2);
+                    int endXBlue = startX + mLineLength2;
+                    drawBlueLine(canvas, startX, mPaddingTop2 + mOutRadius2, endXBlue, mPaddingTop2 + mOutRadius2);
                 }
 
             } else {
-                drawGreyCircle(canvas, mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam), mPaddingTop + mOutRadius);
+                drawGreyCircle(canvas, mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2), mPaddingTop2 + mOutRadius2);
                 if (mTextList2 != null && mTextList2.size() > i) {
-                    drawGreyText(canvas, mTextList2.get(i), mPaddingLeft + mOutRadius + i * (mLineLength + mOutDiam)
-                            , mPaddingTop + mOutDiam + mTextPadding + (int) mTextSize);
+                    drawGreyText(canvas, mTextList2.get(i), mPaddingLeft2 + mOutRadius2 + i * (mLineLength2 + mOutDiam2)
+                            , mPaddingTop2 + mOutDiam2 + mTextPadding2 + (int) mTextSize2);
                 }
-                if (i < mItemCount - 1) {
-                    int startX = mPaddingLeft + mOutDiam + i * (mLineLength + mOutDiam);
-                    int endX = startX + mLineLength;
-                    drawGreyLine(canvas, startX, mPaddingTop + mOutRadius, endX, mPaddingTop + mOutRadius);
+                if (i < mItemCount2 - 1) {
+                    int startX = mPaddingLeft2 + mOutDiam2 + i * (mLineLength2 + mOutDiam2);
+                    int endX = startX + mLineLength2;
+                    drawGreyLine(canvas, startX, mPaddingTop2 + mOutRadius2, endX, mPaddingTop2 + mOutRadius2);
                 }
             }
         }
@@ -321,17 +316,17 @@ public class HorizontalUnitView extends View {
     }
 
     private void drawBlueCircle(Canvas canvas, int cx, int cy) {
-        canvas.drawCircle(cx, cy, mOutRadius, mPaintBlueRing);
+        canvas.drawCircle(cx, cy, mOutRadius2, mPaintBlueRing);
         //canvas.drawCircle(cx, cy, mInnerRadius2, mPaintBlueCircle);
     }
 
     private void drawInnerBlueCircle(Canvas canvas, int cx, int cy) {
         //canvas.drawCircle(cx, cy, mOutRadius2, mPaintBlueRing);
-        canvas.drawCircle(cx, cy, mInnerRadius, mPaintBlueCircle);
+        canvas.drawCircle(cx, cy, mInnerRadius2, mPaintBlueCircle);
     }
 
     private void drawGreyCircle(Canvas canvas, int cx, int cy) {
-        canvas.drawCircle(cx, cy, mOutRadius, mPaintGreyCircle);
+        canvas.drawCircle(cx, cy, mOutRadius2, mPaintGreyCircle);
     }
 
     private void drawGreyLine(Canvas canvas, int startX, int startY, int endX, int endY) {
@@ -358,10 +353,10 @@ public class HorizontalUnitView extends View {
 
     //计算当前点击的位置
     private int measureClickPosition(float x, float y) {
-        int width = getMeasuredWidth() - mPaddingLeft - mPaddingRight;
-        int num = (int) (x - mPaddingLeft) / ((width - mOutDiam) / (mItemCount - 1));
-        int rem = (int) (x - mPaddingLeft) % ((width - mOutDiam) / (mItemCount - 1));
-        if (rem < mOutDiam) {
+        int width = getMeasuredWidth() - mPaddingLeft2 - mPaddingRight2;
+        int num = (int) (x - mPaddingLeft2) / ((width - mOutDiam2) / (mItemCount2 - 1));
+        int rem = (int) (x - mPaddingLeft2) % ((width - mOutDiam2) / (mItemCount2 - 1));
+        if (rem < mOutDiam2) {
             return num;
         }
         return -1;
@@ -375,17 +370,26 @@ public class HorizontalUnitView extends View {
      * 提示重新绘制
      */
     public void notifyDataChange() {
-        mItemCount = mAdapter.getCount();
+        mItemCount2 = mAdapter2.getCount();
         mTextList2.clear();
-        for (int i = 0; i < mItemCount; i++) {
-            mTextList2.add(mAdapter.getData(i));
+        for (int i = 0; i < mItemCount2; i++) {
+            mTextList2.add(mAdapter2.getData(i));
         }
+     /*   if (mTextList2 != null && mTextList2.size() > 0) {
+            if ((int) mTextPaint.measureText(mTextList2.get(0)) > mOutDiam2) {
+                mPaddingLeft2 = (int) mTextPaint.measureText(mTextList2.get(0)) / 2 - mOutRadius2 + mPaddingLeft2;
+            }
+
+            if ((int) mTextPaint.measureText(mTextList2.get(mItemCount2 - 1)) > mOutDiam2) {
+                mPaddingRight2 = (int) mTextPaint.measureText(mTextList2.get(mItemCount2 - 1)) / 2 - mOutRadius2 + mPaddingRight2;
+            }
+        }*/
     }
 
     private void startLineAnimDraw() {
         lineAnim.removeAllListeners();
         lineAnim.removeAllUpdateListeners();
-        lineAnim.setRepeatCount(mItemCount - 1);
+        lineAnim.setRepeatCount(mItemCount2 - 1);
         lineAnim.setInterpolator(new DecelerateInterpolator(1f));
         lineAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -414,6 +418,9 @@ public class HorizontalUnitView extends View {
             @Override
             public void onAnimationRepeat(Animator animation) {
                 mCurrentDrawPosition += 1;
+              /*  if (mCurrentDrawPosition < mVisibleNum2) {
+                    mCurrentDrawPosition += 1;
+                }*/
             }
         });
         lineAnim.start();
@@ -440,11 +447,6 @@ public class HorizontalUnitView extends View {
         return mListener;
     }
 
-    @Override
-    public boolean performClick() {
-        return super.performClick();
-    }
-
     public void setOnItemClickListener(OnItemClickListener mListener) {
         this.mListener = mListener;
         this.setOnTouchListener(new OnTouchListener() {
@@ -456,7 +458,7 @@ public class HorizontalUnitView extends View {
                         downOldY = event.getY();
                         break;
                     case MotionEvent.ACTION_UP:
-                        if (event.getX() - downOldX < mTouchSlop && event.getY() - downOldY < mTouchSlop) {
+                        if (event.getX() - downOldX < mTouchSlop2 && event.getY() - downOldY < mTouchSlop2) {
                             if (HorizontalUnitView.this.mListener != null) {
                                 int position = measureClickPosition(event.getX(), event.getY());
                                 if (position != -1) {
@@ -483,11 +485,10 @@ public class HorizontalUnitView extends View {
      * @param position
      */
     public void setCheckedPos(int position) {
-        if (position >= mVisibleNum || position < -1) {
-            return;
-            //throw new IllegalArgumentException("输入position不正确 position:" + position);
+        if (position >= mVisibleNum2 || position < -1) {
+            throw new IllegalArgumentException("输入position不正确 position:" + position);
         }
-        mCheckedNum = position + 1;
+        mCheckedNum2 = position + 1;
         isInitDraw = false;
         startPointAnimDraw();
 
@@ -499,13 +500,12 @@ public class HorizontalUnitView extends View {
      * @param visibleNum
      */
     public void setVisibleNum(int visibleNum) {
-        if (visibleNum >= mTextList2.size() || visibleNum < -1) {
-            return;
-            //throw new IllegalArgumentException("输入visibleNum不正确 visibleNum:" + visibleNum);
+        if (visibleNum > mTextList2.size() || visibleNum < -1) {
+            throw new IllegalArgumentException("输入visibleNum不正确 visibleNum:" + visibleNum);
         }
-        if (mVisibleNum != visibleNum) {
-            mCheckedNum = visibleNum;
-            mVisibleNum = visibleNum;
+        if (mVisibleNum2 != visibleNum) {
+            mCheckedNum2 = visibleNum;
+            mVisibleNum2 = visibleNum;
         }
         isInitDraw = true;
         startLineAnimDraw();
@@ -513,9 +513,11 @@ public class HorizontalUnitView extends View {
 
     /**
      * 设置适配器
+     *
+     * @param mAdapter
      */
     public void setAdapter(Adapter mAdapter) {
-        this.mAdapter = mAdapter;
+        this.mAdapter2 = mAdapter;
         notifyDataChange();
     }
 
